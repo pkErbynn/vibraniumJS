@@ -94,7 +94,7 @@ tabsContainer.addEventListener('click', function (e) {
 
   // Activate content area
   document
-    .querySelector(`.operations__content--${clicked.dataset.tab}`)  // .operations__content--1/2/3
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)  // .operations__content--1/2/3...retrieved from `data-tab="1"`
     .classList.add('operations__content--active');  // activate the clicked tab
 });
 
@@ -132,178 +132,182 @@ nav.addEventListener('mouseout', e => {
 //////////////////////////////////////////////
 
 ///////////////////////////////////////
+/*
+
 // Selecting, Creating, and Deleting Elements
 
 // Selecting elements
-// console.log(document.documentElement);
-// console.log(document.head);
-// console.log(document.body);
+console.log(document.documentElement);
+console.log(document.head);
+console.log(document.body);
 
-// const header = document.querySelector('.header'); // most used and preferred...returns NodeList type
-// const allSections = document.querySelectorAll('.section'); // and this...returns NodeList type
-// console.log(allSections);
+const header = document.querySelector('.header'); // most used and preferred...returns NodeList type
+const allSections = document.querySelectorAll('.section'); // and this...returns NodeList type
+console.log(allSections);
 
-// document.getElementById('section--1'); // returns NodeList type type
-// const allButtons = document.getElementsByTagName('button'); // returns HTMLCollectionsElement type
-// console.log(allButtons);
+document.getElementById('section--1'); // returns NodeList type type
+const allButtons = document.getElementsByTagName('button'); // returns HTMLCollectionsElement type
+console.log(allButtons);
 
-// console.log(document.getElementsByClassName('btn')); // returns HTMLCollectionsElement type
+console.log(document.getElementsByClassName('btn')); // returns HTMLCollectionsElement type
 
 
 // Creating and inserting elements
-// const message = document.createElement('div');
-// message.classList.add('cookie-message');
-// // message.textContent = 'We use cookied for improved functionality and analytics.';
-// message.innerHTML =
-//   'We use cookied for improved functionality and analytics. <button class="btn btn--close-cookie">Got it!</button>';
+const message = document.createElement('div');
+message.classList.add('cookie-message');
+message.textContent = 'We use cookied for improved functionality and analytics.';
+message.innerHTML =
+  'We use cookied for improved functionality and analytics. <button class="btn btn--close-cookie">Got it!</button>';
 
-// header.prepend(message); // prepend the child nodes
-// header.append(message);
-// header.append(message.cloneNode(true));  // since message element is a live element, can only exist at one place, it needs to be clone in order to be visible in multiple places
+header.prepend(message); // prepend the child nodes
+header.append(message);
+header.append(message.cloneNode(true));  // since message element is a live element, can only exist at one place, it needs to be clone in order to be visible in multiple places
 
-// header.before(message);  // places element as sibling
-// header.after(message);
+header.before(message);  // places element as sibling
+header.after(message);
 
 
 // Delete elements
-// document
-//   .querySelector('.btn--close-cookie')
-//   .addEventListener('click', function () {
-//     message.remove();
-//     // message.parentElement.removeChild(message);  // old way of removing element
-//   });
+document
+  .querySelector('.btn--close-cookie')
+  .addEventListener('click', function () {
+    message.remove();
+    // message.parentElement.removeChild(message);  // old way of removing element
+  });
 
-// ///////////////////////////////////////
-// // Styles, Attributes and Classes
+///////////////////////////////////////
+// Styles, Attributes and Classes
   
-// // Styles
-// message.style.backgroundColor = '#37383d';  // this approach only gets and sets inline styles...backgroundColor needs to be in camelCase
-// message.style.width = '120%';
+// Styles
+message.style.backgroundColor = '#37383d';  // this approach only gets and sets inline styles...backgroundColor needs to be in camelCase
+message.style.width = '120%';
 
-// console.log(message.style.color);
-// console.log(message.style.backgroundColor);
+console.log(message.style.color);
+console.log(message.style.backgroundColor);
 
-// console.log(getComputedStyle(message).color); // gets and set external sheet styles 
-// console.log(getComputedStyle(message).height);
+console.log(getComputedStyle(message).color); // gets and set external sheet styles 
+console.log(getComputedStyle(message).height);
 
-// message.style.height =
-//   Number.parseFloat(getComputedStyle(message).height, 10) + 30 + 'px';  // parseFloat() on only takes the float side of the string..eg '12.4px' to 12.4
+message.style.height =
+  Number.parseFloat(getComputedStyle(message).height, 10) + 30 + 'px';  // parseFloat() on only takes the float side of the string..eg '12.4px' to 12.4
 
-// document.documentElement.style.setProperty('--color-primary', 'orangered'); // gets and sets css variables / custom properties at root
+document.documentElement.style.setProperty('--color-primary', 'orangered'); // gets and sets css variables / custom properties at root
 
-// /////// Attributes
-// /// Getting and setting standard attributes
-// const logo = document.querySelector('.nav__logo');
-// console.log(logo.alt);  // access properties on an image element...same as .src
-// console.log(logo.className); // for some reasons, not '.class' but '.className'
+/////// Attributes
+/// Getting and setting standard attributes
+const logo = document.querySelector('.nav__logo');
+console.log(logo.alt);  // access properties on an image element...same as .src
+console.log(logo.className); // for some reasons, not '.class' but '.className'
 
-// logo.alt = 'Beautiful minimalist logo';
+logo.alt = 'Beautiful minimalist logo';
 
-// /// Getting and setting non-standard attributes
-// console.log(logo.designer); // doesn't work since not a standard attribute on image element
-// console.log(logo.getAttribute('designer')); // another way of getting attributes from elements...works when set manually in html file
-// logo.setAttribute('company', 'Bankist'); // can set non-standard attribute
+/// Getting and setting customized, non-standard attributes
+console.log(logo.designer); // doesn't work since not a standard attribute on image element
+console.log(logo.getAttribute('designer')); // another way of getting attributes from elements...works when set manually in html file
+logo.setAttribute('company', 'Bankist'); // can set non-standard attribute
 
-// const link = document.querySelector('.nav__link--btn');
-// console.log(link.href); // gets absolute path
-// console.log(link.getAttribute('href')); // gets relative path unless absolute from html source already
+const link = document.querySelector('.nav__link--btn');
+console.log(link.href); // gets absolute path
+console.log(link.getAttribute('href')); // gets relative path unless absolute from html source already
 
-// /// Data attributes - properties that starts with 'data-' keyword
-// console.log(logo.dataset.versionNumber); // data attributes are stored in dataset property...with camelCase
+/// Data attributes - properties that starts with 'data-' keyword prefix ****
+console.log(logo.dataset.versionNumber); // data attributes are stored in dataset property...with camelCase
 
 
-// /////// Classes
-// logo.classList.add('c', 'j');
-// logo.classList.remove('c', 'j');
-// logo.classList.toggle('c');
-// logo.classList.contains('c'); // not includes
+/////// Classes
+logo.classList.add('c', 'j');
+logo.classList.remove('c', 'j');
+logo.classList.toggle('c');
+logo.classList.contains('c'); // not includes
+
+/////////////////////////////////////
+// Types of Events and Event Handlers. ****
+const h1 = document.querySelector('h1');
+const alertH1 = function (e) {
+  alert('addEventListener: Great! You are reading the heading :D');
+};
+h1.addEventListener('mouseenter', alertH1); // outsourcing the method listener
+setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 3000);  // removing event after 3 secs
+
+h1.onmouseenter = function (e) {   // old way of listening to event...doesn't support multiple events
+  alert('onmouseenter: Great! You are reading the heading :D');
+};
+
 
 ///////////////////////////////////////
-// Types of Events and Event Handlers
-// const h1 = document.querySelector('h1');
-// const alertH1 = function (e) {
-//   alert('addEventListener: Great! You are reading the heading :D');
-// };
-// h1.addEventListener('mouseenter', alertH1); // outsourcing the method listener
-// setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 3000);  // removing event after 3 secs
+// Event Propagation in Practice ***
 
-// h1.onmouseenter = function (e) {   // old way of listening to event...doesn't support multiple events
-//   alert('onmouseenter: Great! You are reading the heading :D');
-// };
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+const randomColor = () =>
+  `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
 
-
-// ///////////////////////////////////////
-// // Event Propagation in Practice
-
-// const randomInt = (min, max) =>
-//   Math.floor(Math.random() * (max - min + 1) + min);
-// const randomColor = () =>
-//   `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
-
-// document.querySelector('.nav__link').addEventListener('click', function (e) {
-//   this.style.backgroundColor = randomColor();
-//   console.log('LINK', e.target, e.currentTarget); // .target is where the event originated. Where the click event happened, not the element that the event handler was attached...in this case: the .nav__link
-//   console.log(e.currentTarget === this);  // current target / this...is the element that the event handler was attached...this case: .nav__link
+document.querySelector('.nav__link').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+  console.log('LINK', e.target, e.currentTarget); // .target is where the event originated ***. Where the click event happened, not the element that the event handler was attached...in this case: the .nav__link
+  console.log(e.currentTarget === this);  // current target / this...is the element that the event handler was attached...this case: .nav__link
   
-//   // e.stopPropagation(); // Stop propagation...preventing it handled by the parent element too
-// });
-// document.querySelector('.nav__links').addEventListener('click', function (e) {
-//   this.style.backgroundColor = randomColor();
-//   console.log('CONTAINER', e.target, e.currentTarget);  // target: .nav__link, currentTarget: .nav__links...nav__links is a parent element...handling event occuring at child
-// });
+  // e.stopPropagation(); // Stop propagation...preventing it handled by the parent element too
+});
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+  console.log('CONTAINER', e.target, e.currentTarget);  // target: .nav__link, currentTarget: .nav__links...nav__links is a parent element...handling event occuring at child
+});
 
-// document.querySelector('.nav').addEventListener('click', function (e) { 
-//   this.style.backgroundColor = randomColor();
-//   console.log('NAV', e.target, e.currentTarget);
-// },
-// // false...Bubbling face, false, by default. Capturing set to true. 
-// );
+document.querySelector('.nav').addEventListener('click', function (e) { 
+  this.style.backgroundColor = randomColor();
+  console.log('NAV', e.target, e.currentTarget);
+},
+// false...Bubbling face, false, by default. Capturing set to true. 
+);
 
-// // Bubbling phase is the default. Event travels from the target to the root..thus the child will print first on top of the event stack, before the parent handlers
-
-
-///////////////////////////////////////
-// // DOM Traversing
-// const h1 = document.querySelector('h1');
-
-// // Going downwards: children
-// console.log(h1.querySelectorAll('.highlight')); // select deep-level children of h1
-// console.log(h1.childNodes);
-// console.log(h1.children); // direct children
-// h1.firstElementChild.style.color = 'white';
-// h1.lastElementChild.style.color = 'orangered';
-
-// Going upwards: parents
-// console.log(h1.parentNode); // direct parents
-// console.log(h1.parentElement);  // dirent parents element
-// h1.closest('.header').style.background = 'var(--gradient-secondary)'; // .closest()...targets grandparent/top-level parents...opposite of querySelector (as this target inner child)
-// h1.closest('h1').style.background = 'var(--gradient-primary)';
-
-// // Going sideways: siblings
-// console.log(h1.previousElementSibling); // elements...preffered to use element instead of the node
-// console.log(h1.nextElementSibling);
-// console.log(h1.previousSibling); // nodes
-// console.log(h1.nextSibling);
-// console.log(h1.parentElement.children); // getting all sibblings including itself...go top to the parent and the find the children below
-
-// [...h1.parentElement.children].forEach(function (el) {
-//   if (el !== h1) el.style.transform = 'scale(0.5)';
-// });
+// Bubbling phase is the default. Event travels from the target to the root..thus the child will print first on top of the event stack, before the parent handlers
 
 
-///////////////////////////////////////
-// Lifecycle DOM Events
-// document.addEventListener('DOMContentLoaded', function (e) {
-//   console.log('HTML parsed and DOM tree built!', e);
-// });
+/////////////////////////////////////
+// DOM Traversing. **
+const h1 = document.querySelector('h1');
 
-// window.addEventListener('load', function (e) {
-//   console.log('Page fully loaded', e);
-// });
+// Going downwards: children
+console.log(h1.querySelectorAll('.highlight')); // select deep-level children of h1
+console.log(h1.childNodes);
+console.log(h1.children); // direct children
+h1.firstElementChild.style.color = 'white';
+h1.lastElementChild.style.color = 'orangered';
 
-// window.addEventListener('beforeunload', function (e) {
-//   console.log('TRIGER');
-//   e.preventDefault();
-//   console.log(e);
-//   e.returnValue = '';
-// });
+Going upwards: parents
+h1.closest('.header').style.background = 'var(--gradient-secondary)'; // .closest()...targets grandparent/top-level parents...opposite of querySelector (as this target inner child)
+h1.closest('h1').style.background = 'var(--gradient-primary)';
+console.log(h1.parentElement);  // dirent parents element
+console.log(h1.parentNode); // direct parents
+
+// Going sideways: siblings
+console.log(h1.previousElementSibling); // elements...preffered to use element instead of the node
+console.log(h1.nextElementSibling);
+console.log(h1.previousSibling); // nodes
+console.log(h1.nextSibling);
+console.log(h1.parentElement.children); // getting all sibblings including itself...go top to the parent and the find the children below
+
+[...h1.parentElement.children].forEach(function (el) {
+  if (el !== h1) el.style.transform = 'scale(0.5)';
+});
+
+
+/////////////////////////////////////
+Lifecycle DOM Events
+document.addEventListener('DOMContentLoaded', function (e) {
+  console.log('HTML parsed and DOM tree built!', e);
+});
+
+window.addEventListener('load', function (e) {
+  console.log('Page fully loaded', e);
+});
+
+window.addEventListener('beforeunload', function (e) {
+  console.log('TRIGER');
+  e.preventDefault();
+  console.log(e);
+  e.returnValue = '';
+});
+
+*/
