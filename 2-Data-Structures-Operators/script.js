@@ -281,7 +281,7 @@ const players1Final = [...players1, 'Thiago', 'Coutinho', 'Perisic']
 console.log('players1Final:', players1Final);
 
 // 5.
-// const {odds: {team1, draw, team2}} = game; // don't forget default values
+// const {odds: {team1, draw, team2}} = game; // don't forget default values ******
 // const {odds: {team1: team1 = 0, x: draw = 0, team2: team2 = 0}} = game;
 const {team1: team1 = 0, x: draw = 0, team2: team2 = 0} = game.odds;    //LH object should match RH object
 console.log('odds:', team1, draw, team2);
@@ -356,10 +356,10 @@ if(restaurant2.openingHours &&
     console.log(restaurant2.openingHours?.fri?.open);
   }
 
-// with optional chaining
+// with optional chaining **********
 console.log(restaurant2.openingHours?.fri?.open);
    
-// optional chain with nullish (ie. null and undefined) colescing for default value
+// optional chain with nullish (ie. null and undefined) colescing for default value *****
 let availability = restaurant2.openingHours?.fri?.open ?? 'closed';
 console.log('status', availability);
 
