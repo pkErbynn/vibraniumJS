@@ -37,7 +37,7 @@
         - **Divide and conquer** by subtasking
         - **Research**
         - Devise a **plan**. For bigger problems, write a psuedo-code b4 actual code
-7. Ternary operator: can store their return value
+7. Ternary operator: return values, used with expressions, NOT statements
     - **ternary computed in string template**
 8. Brief History
     - Brendan Eich created 1st version of Js in 10 days, called **Mocha** 
@@ -297,24 +297,59 @@ Events
 - Ternary
     - to set default value where 0 and null are invalid (replaceable with `||` Short-circuiting)
     - replaces one-line if-else blocks
+    - used when there's a conditional statement to decide
+    - replaces "if-else" code
 - Short-circuiting with or and &&
     - `&&` => to **replace one-line if-condition without the 'else' part**
+        - as guard clause
+        - for if this is true/valid, then do this
+        - eg; Adding a key-value pair to object if key exist on incomming `data`
+            ```js
+            let recipe = data;
+            return {
+                id: recipe.id,
+                cookingTime: recipe.cooking_time,
+                ingredients: recipe.ingredients,
+                ...(recipe?.key && {key: recipe?.key})  // add object if exists **
+            }
+            ```
     - `||` => to set default value where 0 and null are invalid
-    - eg; Adding a key-value pair to object if key exist on incomming `data`
-    ```js
-    let recipe = data;
-    return {
-        id: recipe.id,
-        cookingTime: recipe.cooking_time,
-        ingredients: recipe.ingredients,
-        ...(recipe?.key && {key: recipe?.key})  // add object if exists **
-    }
-    ```
+ 
 
-- **Null colescing** value
+- **Nullish coalescing operator: ??**
+    - makes sure value is not null or undefined
     - **always use to replace default value setup w/ ternary (when 0 is considered valid)**
     - for only `nullish` property
-- **Optional chaining**
+    ```js
+        let userName = "Alice";
+        let fallbackName = "Guest";
+
+        let displayedName = userName ?? fallbackName; // displayedName will be "Alice"
+
+        let quantity = 0;
+        let defaultQuantity = 1;
+
+        let finalQuantity = quantity ?? defaultQuantity; // finalQuantity will be 0 (because 0 is not null or undefined)
+    ```
+- || vs ?? vs tenary
+    - The || returns the right value ONLY when the left value is falsy. Falsy values include: 0, "", false, null, undefined, NaN 
+    
+    - In contrast, ?? returns the right value **ONLY** when the left value is null or undefined. It does not treat 0, "", NaN or false as invalid. 
+    - In tenary, returns value, and used when the if-condition is more than just value validity...ie, but rather external conditional logic 
+    - Key distinction:
+        - || = "falsy replace"
+        - ?? = "null/undefined replace only"
+        - To use any, as yourself if return can 0, empty string or false
+
+        ```js
+        let emptyString = "";
+        let defaultValue = "Default";
+
+        let resultWithOR = emptyString || defaultValue; // resultWithOR will be "Default" (because "" is falsy)
+        let resultWithNullishCoalescing = emptyString ?? defaultValue; // resultWithNullishCoalescing will be "" (because "" is not null or undefined)
+        let tenary = someOtherCondition ? trueBlock : ElseBock;    // used when there's an if-else block...
+        ```
+- **Optional chaining: ?**
     - checks if property exist before access
     - **used w/ null colescing to set default**
     - `a.b?.c ?? 'default'`
@@ -335,10 +370,10 @@ Events
     }
 
     // improved using ternary
-    const spendingLimit = userSpendingLimit[user] ? userSpendingLimit[user] : 'erb';
+    const spendingLimit = userSpendingLimit[user] ? userSpendingLimit[user] : 100;
 
     // improved using null colescing
-    const spendingLimit = userSpendingLimit?.[user] ?? 'erb';
+    const spendingLimit = userSpendingLimit?.[user] ?? 100;
 
 
     //// Different use-case with String concatination
@@ -356,6 +391,13 @@ Events
 
 - **For-of loop**
     - get index with `.entries()`
+        ```js
+        const myArray = ['apple', 'banana', 'cherry'];
+
+        for (const [index, value] of myArray.entries()) {
+            console.log(`Index: ${index}, Value: ${value}`);
+        }
+        ```
 - **Enhanced object literal**
     - object literal => you literary build an object without using any api, just using `{...}`
     - **keys/property names can be computed** not just the values
@@ -371,6 +413,7 @@ Events
 - Set
     - accept an iterable eg, array
     - **specific item is not retrievable because order doesn't matter, ie no indexes**
+    - unique, no duplicate
     - can check whether an element exists
 - Maps vs Object
     - object **keys are always string** whilst map **keys can be any type**
@@ -637,7 +680,7 @@ Events
         - help us write js code to create, modify and delete html elements; set styles, classes and attributess; listen and respond to events;
         - help us interact with the DOM tree from an HTML document
         - DOM contains APIs (methods and properties) to interact with the DOM tree
-    - every element is represented as **Node** object, each node, eg ``<p> Paragraph text </p> <!-- Comment -->` consist of the following types of subNodes;
+    - every element is represented as **Node** object, each node, eg `<p> Paragraph text </p> <!-- Comment -->` consist of the following types of subNodes;
         - element `<p> ... </p>` 
             - has HTMLElement type, with downlevel types like HTMLButtonElement, HTMLDivElement. 
             - One type of HTMLElement per HTML element, each has access to different properties/methods for each type
@@ -893,7 +936,7 @@ Events
         - what if 404, means promise was not rejected(no error occurs), success just that no data is found
             - this needs to be handled manually
         - **handle custom error with the `.ok` property on response**
-            - `if(!esponse.ok) throw new Error('sth went wrong')`
+            - `if(!response.ok) throw new Error('sth went wrong')`
         - **manaually throw any error, that the Promise global catch() might not be able to catch automatically**
 - How async works behind the scenes in the runtime within the
     - call stack
@@ -904,7 +947,7 @@ Events
     - Promises are consumed most often, but a use case for creating one is by wrapping callback fnx with a Promise
         - this is called Promisifying
     - **promising Function should return** a `new Promise((resolve, reject)...)` like this
-    ```
+    ```js
     const downloadImage = function (imgPath) {
         return new Promise((resolve, reject) => {   // returns a promise
             // do some work
