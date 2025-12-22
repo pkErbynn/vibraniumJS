@@ -335,18 +335,21 @@ Events
         
     ```
 - || vs ?? vs tenary
-    - The || returns the **right value** ONLY when the left value is falsy. Falsy values include: `0, "", false, null, undefined, NaN`
+    - The || returns the **right value** ONLY when the left value is falsy. Falsy invalid values includes: `0, "", false, null, undefined, NaN`. USE WHEN '0' and 'false' IS EXPECTED AS INVALID VALUES
         ```js
             0 || 5   // 5
-            "" || "hi"   // hi
+            "" || 5   // 5
+            false || 5   // 5
+            null || 5   // 5
+            undefined || 5   // 5
         ```
-    - In contrast, ?? returns the right value **ONLY** when the left value is null or undefined. It does not treat 0, "", NaN or false as invalid. 
-NaN`
+    - In contrast, ?? returns the right value **ONLY** when the left value is `null` or `undefined`. It treats 0, "", NaN or false as valid values. BEST USED ON OBJECTS (or WHEN '0' or 'false' IS EXPECTED AS VALID VALUE)
         ```js
             0 ?? 5   // O
-            "" ?? "hi"   // hi
-            false ?? "hi"   // false
-            null ?? "hi"   // hi
+            "" ?? 5   // ""
+            false ?? 5   // false
+            null ?? 5   // 5
+            undefined ?? 5   // 5
         ```
     - In tenary, returns value, and used when the if-condition is more than just value validity...ie, but rather external conditional logic 
     - Key distinction:
