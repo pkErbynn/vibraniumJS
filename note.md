@@ -330,11 +330,24 @@ Events
         let defaultQuantity = 1;
 
         let finalQuantity = quantity ?? defaultQuantity; // finalQuantity will be 0 (because 0 is not null or undefined)
+
+        // example 
+        
     ```
 - || vs ?? vs tenary
-    - The || returns the right value ONLY when the left value is falsy. Falsy values include: 0, "", false, null, undefined, NaN 
-    
+    - The || returns the **right value** ONLY when the left value is falsy. Falsy values include: `0, "", false, null, undefined, NaN`
+        ```js
+            0 || 5   // 5
+            "" || "hi"   // hi
+        ```
     - In contrast, ?? returns the right value **ONLY** when the left value is null or undefined. It does not treat 0, "", NaN or false as invalid. 
+NaN`
+        ```js
+            0 ?? 5   // O
+            "" ?? "hi"   // hi
+            false ?? "hi"   // false
+            null ?? "hi"   // hi
+        ```
     - In tenary, returns value, and used when the if-condition is more than just value validity...ie, but rather external conditional logic 
     - Key distinction:
         - || = "falsy replace"
