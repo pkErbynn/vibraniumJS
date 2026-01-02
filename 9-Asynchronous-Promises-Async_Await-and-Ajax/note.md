@@ -3,7 +3,7 @@ Promise variable
 
 Promise life cycle or states
 - 1. pending
-- 2. settled: fulfilled or rejected
+- 2. settled: fulfilled/resolved or rejected
 
 Build Promise => Consume Promise
 

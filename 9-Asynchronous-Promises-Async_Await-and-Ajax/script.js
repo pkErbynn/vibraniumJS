@@ -5,44 +5,46 @@ const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////////
 
+// Consuming Promise/Async functions
+// ...NB: async functions like fetch() returns Promise not the settled/fullfilled value...unless 'await'ed
 // manually throw custom errors that mignt not be handled auto by promise
 // example: - resource not found, property not found on data
 
 const getPost = function () {
-  fetch("https://my-json-server.typicode.com/typicode/demo/posts")
-    .then((response) => {
+    fetch("https://my-json-server.typicode.com/typicode/demo/posts")
+        .then((response) => {
 
-        // handle before .json()
-        if(!response.ok){
-            throw new Error('custom error handling')    // error if prev fetch() fails....REJECTS the promise
-        }
-        return response.json();
-    })
-    .then((response) => {   
-        console.log(response);
-        // const one = response[0].id;
-        const one = response[8]?.id;    // not found id
+            // handle before .json()
+            if (!response.ok) {
+                throw new Error('custom error handling')    // error if prev fetch() fails....REJECTS the promise
+            }
+            return response.json();
+        })
+        .then((response) => {
+            console.log(response);
+            // const one = response[0].id;
+            const one = response[8]?.id;    // not found id
 
-        // another specific-level error
-        if(!one){
-            throw new Error('no id found')      // error if id property yielded by fetch() is not found
-        }
+            // another specific-level error
+            if (!one) {
+                throw new Error('no id found')      // error if id property yielded by fetch() is not found
+            }
 
-        return fetch(`https://my-json-server.typicode.com/typicode/demo/posts/${one}`)   // error
-    })
-    .then(res => {
-         // handle before .json()
-         console.log(res);
+            return fetch(`https://my-json-server.typicode.com/typicode/demo/posts/${one}`)   // error
+        })
+        .then(res => {
+            // handle before .json()
+            console.log(res);
 
-         // another fine-grain error to handle 
-         if(!res.ok){
-             throw new Error('post not found')      // error if prev fetch() fails
-         }
-        return res.json()
-    })
-    .then(res => console.log(res))
-    .catch(err => console.error(`${err} boom!!`))   // handles all err msg
-    
+            // another fine-grain error to handle 
+            if (!res.ok) {
+                throw new Error('post not found')      // error if prev fetch() fails
+            }
+            return res.json()
+        })
+        .then(res => console.log(res))
+        .catch(err => console.error(`${err} boom!!`))   // handles all err msg
+
 };
 
 getPost();
@@ -56,28 +58,28 @@ getPost();
 // now: getJson -> then for err+getJson -> catch error
 const getJson = function (url, message = 'Something went wrong') {
     return fetch(url)
-            .then((response) => {
-                // handle before .json() as it gets the body
-                if(!response.ok) throw new Error(message)
-                return response.json();
-    })
+        .then((response) => {
+            // handle before .json() as it gets the body
+            if (!response.ok) throw new Error(message)
+            return response.json();
+        })
 }
 const getPostOptimized = function () {
-    getJson("https://my-json-server.typicode.com/typicode/demo/posts", 
-    "post not found")
-    .then((response) => {
-        // const one = response[1].id;
-        const one = response[6]?.id;
-        if(!one) throw new Error('no such post')
+    getJson("https://my-json-server.typicode.com/typicode/demo/posts",
+        "post not found")
+        .then((response) => {
+            // const one = response[1].id;
+            const one = response[6]?.id;
+            if (!one) throw new Error('no such post')
 
-        return getJson(`https://my-json-server.typicode.com/typicode/demo/qposts/${one}`, "wrong url")
-    })
-    .then(res => res.json())
-    .then(res => console.log(res))
-    .catch(err => console.error(`${err} boom!!`))
-    
+            return getJson(`https://my-json-server.typicode.com/typicode/demo/qposts/${one}`, "wrong url")
+        })
+        .then(res => res.json())
+        .then(res => console.log(res))
+        .catch(err => console.error(`${err} boom!!`))
+
 };
-  
+
 getPostOptimized();
 
 // Go here for more: https://github.com/pkErbynn/complete-javascript-course/blob/8201b01f2fcd274fb276c1c8e11e55847c6d451e/16-Asynchronous/final/script.js#L146
@@ -90,27 +92,40 @@ Order of execution
 1. Synchronous code
 2. Promise from Micro Task queue
 3. Callbacks from Callback queue
-
---- Promisifying
-- means, converting/wrapping callback code into promise
-- give benefit of using the .then() chain nicely instead of nexted callback
 */
 
-// Promisifying
+// Simple Promise
+// Not async yet
+const lotteryPromise_simple = new Promise(function (resolve, reject) {
+    console.log('Lotter is happening...');
+
+    if (Math.random() >= 0.5) {
+        resolve('YOU WIN')  // can resolve with no data
+    } else {
+        reject('You lost your money')
+    }
+})
+lotteryPromise_simple.then(res => console.log(res))
+    .catch(err => console.log(err))
+
+// --- Promisifying
+// - means, converting/wrapping callback code into promise
+// - give benefit of using the .then() chain nicely instead of nexted callback
+// - asyc with setTimeout() cus doesn't run imm
 const lotteryPromise = new Promise(function (resolve, reject) {
     console.log('Lotter is happening...');
-    
+
     setTimeout(() => {
         if (Math.random() >= 0.5) {
             resolve('YOU WIN')  // can resolve with no data
         } else {
-            reject(new Error('You lost your money'))
+            reject(new Error('You lost your money'))    // PUT REJECT MESSAGE IN NEW ERROR()
         }
     }, 2000);   // run promise after 2 secs
 })
 
 lotteryPromise.then(res => console.log(res))
-              .catch(err => console.log(err))
+    .catch(err => console.log(err))
 
 
 // Promise with no reject state
@@ -122,6 +137,28 @@ const wait = (sec) => {
 }
 Promise.resolve('ab').then(x => log(x))
 Promise.reject(new Error('problem')).catch(x => log(x))
+
+// Promisifying existing callbacks
+navigator.geolocation.getCurrentPosition(
+    position => console.log(position),
+    error => console.log(error)
+)
+
+// promisified version
+const getPosition = () => {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            position => resolve(position),
+            error => reject(error)
+        )
+        // navigator.geolocation.getCurrentPosition(
+        //     resolve,
+        //     reject
+        // )
+    })
+}
+getPosition.then(position => console.log(position))
+    .catch((err) => console.log(err))
 
 
 ///////////////////////////////////////
@@ -148,22 +185,22 @@ GOOD LUCK 😀
 
 
 const whereAmI = function (lat, lng) {
-  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
-    .then(res => {
-      if (!res.ok) throw new Error(`Problem with geocoding ${res.status}`); // cheking ok status on the head
-      return res.json();    // json to return the body message to the next chain
-    })
-    .then(data => {
-      console.log(data);
-      console.log(`You are in ${data.city}, ${data.country}`);
-      return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);    // api not working
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`Country not found (${res.status})`);
-      return res.json();
-    })
-    .then(data => renderCountry(data[0]))
-    .catch(err => console.error(`${err.message} 💥`));
+    fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+        .then(res => {
+            if (!res.ok) throw new Error(`Problem with geocoding ${res.status}`); // cheking ok status on the head
+            return res.json();    // json to return the body message to the next chain
+        })
+        .then(data => {
+            console.log(data);
+            console.log(`You are in ${data.city}, ${data.country}`);
+            return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);    // api not working
+        })
+        .then(res => {
+            if (!res.ok) throw new Error(`Country not found (${res.status})`);
+            return res.json();
+        })
+        .then(data => renderCountry(data[0]))
+        .catch(err => console.error(`${err.message} 💥`));
 };
 whereAmI(52.508, 13.381);
 whereAmI(19.037, 72.873);
@@ -192,7 +229,7 @@ GOOD LUCK 😀
 const imgContainer = document.querySelector('.images');
 
 const createImage = function (imgPath) {
-    return new Promise((resolve, reject) =>{
+    return new Promise((resolve, reject) => {
         const img = document.createElement('img');
         img.src = imgPath;
 
@@ -229,8 +266,11 @@ createImage('img/img-1.jpg')
     })
 
 
-    /////// async / await
+///////// ==== async / await
+// makes code looks sync but it's rather async
+// just ANOTHER WAY OF CONSUMING PROMISE
 const whereAmIAsync = async () => {
+    // fetch("https://my-json-server.typicode.com/typicode/demo/posts").then();     // .then() or await pattern of consumming promise
     const res = await fetch("https://my-json-server.typicode.com/typicode/demo/posts");
     const data = await res.json(); // returns a promise thus 'await'
     console.log('RESS:', data);
@@ -242,43 +282,138 @@ console.log('FIRST');
 whereAmIAsync();
 console.log('SECOND');
 
+// previous promisified version
+const getPositionByPromise = () => {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            position => resolve(position),
+            error => reject(error)
+        )
+    })
+}
+// --- consuming Promise w/ error handling
+// getPositionByPromise.then(position => console.log(position))
+//             .catch((err) => console.log(err))
+try {
+    const position = await getPositionByPromise()
+    console.log(position)
+}
+catch (err) {
+    console.log(err);
+}
 
-///// return async
+// -- convert Promise consumer from .then to await pattern
+const whereAmIAsyc = async function (lat, lng) {
+    try {
+        const res = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+        if (!res.ok) throw new Error(`Problem with geocoding ${res.status}`); // cheking ok status on the head
+        const data = await res.json();    // json to return the body message to the next chain
+        console.log(data);
+        console.log(`You are in ${data.city}, ${data.country}`);
+
+        const resAgain = await fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
+        if (!resAgain.ok) throw new Error(`Country not found (${resAgain.status})`);
+        const resAgainJson = await resAgain.json();
+
+        renderCountry(resAgainJson[0])
+    }
+    catch (err) {
+        console.error(`${err.message} 💥`);
+    }
+};
+whereAmIAsyc(52.508, 13.381);
+
+
+// --- returning avalues from async functions
+// NB: ASYNC also returns promise
 const whereAmIAsync2 = async () => {
     const res = await fetch("https://my-json-server.typicode.com/typicode/demo/posts");
     const data = await res.json(); // returns a promise thus 'await'
     console.log('RESS 2:', data);
-    return 'SECOND2';
+    return data;
 }
 
-// calling async in async + checking order of execution
-(async function (){
-    const result = await whereAmIAsync2();  // need to be awaited in async fxn
-    console.log('RESULT:', result);
+// CALLING async function as Promise with .then()
+whereAmIAsync2()
+    .then(data => {
+        console.log(data);
+    })
+    // error async catch block needs to be thrown in order to reach this catch level
+    .catch((err) => console.log(err))
+    .finally()
+
+// calling async in async function + checking order of execution
+(async function () {
+    try {
+        const result = await whereAmIAsync2();  // need to be awaited in async fxn
+        console.log('RESULT:', result); 
+    } catch (error) {
+        console.log('Error:', error); 
+    }
 })()  // IIFE
 
 
-// canceling request if it took so long using .race()
-// const mytimeout = function (sec) {
-//     return new Promise((_, reject) => {
-//         setTimeout(() => {
-//             reject(new Error('Request took so long'))
-//         }, sec * 1000);
-//     })
-// }
-// //// timout after certain long request time
-// Promise.race([fetch("https://my-json-server.typicode.com/typicode/demo/posts"), mytimeout(2)])
-// .then(res => console.log(res))
-// .catch(err => console.log(err))
+// --- Runing promise in Parrallel
+// Promise.all *** => if one promise rejects, all will reject...short-ciruiting effect like &&
+const get3Countries = async (c1Url, c2Url, c3Url) => {
+    try {
+        // there's is an order of promise execution
+        // const data1 = await getJson(c1Url)
+        // const data2 = await getJson(c2Url)
+        // const data3 = await getJson(c3Url)
+        // console.log([data1, data2, data3]);
 
+        // there's is NO ORDER of promise execution
+        const data1 = getJson(c1Url)
+        const data2 = getJson(c2Url)
+        const data3 = getJson(c3Url)
 
-/// load all images
+        // NB: if one promise rejects, all will reject...short-ciruiting
+        const data = await Promise.all(data1, data2, data3) // consume promise with 'await'
+        console.log(data);
+        
+        // NB: return the one promise that resolves first and ignores the result of the rest...no short-ciruiting
+        const finishedPromise = await Promise.race(data1, data2, data3)
+        console.log(finishedPromise);
+    } catch (error) {
+        
+    }
+}
+
+// Promise.race *** => return the one promise that resolves first and ignores the result of the rest...no short ciruiting like ||
+// ...timeout long-running Promise after 2 sec....consume Promise/Async with .then()
+// ...canceling request if Promise takes so long to resolve...using .race()
+const mytimeout = function (sec) {
+    return new Promise((_, reject) => {
+        setTimeout(() => {
+            reject(new Error('Request took so long'))
+        }, sec * 1000);
+    })
+}
+Promise.race([fetch("https://my-json-server.typicode.com/typicode/demo/posts"), mytimeout(2)])
+.then(res => console.log(res))
+.catch(err => console.log(err))
+
+// Promise.allSettled => returns array all Promise results with their status...no short-circuiting...consume using .then()
+Promise.allSettled([Promise.resolve('success'), Promise.resolve('error'), Promise.resolve('success')])
+.then((res) => console.log(res));
+
+// Promise.any => returns anyone that succeeds unless all rejects
+Promise.any([Promise.resolve('success'), Promise.resolve('error'), Promise.resolve('success')])
+.then((res) => console.log(res));
+
+// challenge
+/// load all images in parallel
 const loadAll = async function (imageArr) {
     try {
-        const images = imageArr.map(async image => await createImage(image))
-        console.log('promisified images:', images);
-        const imageResults = await Promise.all(images)   // again, all promise need to be awaited
+
+        // NB: await inner callback promises...inner async function Promises return Promise not the value at outer scope of map
+        const promisedImages = imageArr.map(async image => await createImage(image))
+        console.log('promisified images:', promisedImages);
+
+        const imageResults = await Promise.all(promisedImages)   // again, all promise need to be awaited
         console.log('result images:', imageResults);
+
         imageResults.forEach(img => img.classList.add('parallel'))
     } catch (error) {
         alert('error occurred loading images')
