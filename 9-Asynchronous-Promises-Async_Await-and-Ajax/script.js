@@ -14,17 +14,18 @@ const getPost = function () {
 
         // handle before .json()
         if(!response.ok){
-            throw new Error('custom error handling')
+            throw new Error('custom error handling')    // error if prev fetch() fails....REJECTS the promise
         }
         return response.json();
     })
-    .then((response) => {
+    .then((response) => {   
         console.log(response);
         // const one = response[0].id;
         const one = response[8]?.id;    // not found id
 
+        // another specific-level error
         if(!one){
-            throw new Error('no id found')
+            throw new Error('no id found')      // error if id property yielded by fetch() is not found
         }
 
         return fetch(`https://my-json-server.typicode.com/typicode/demo/posts/${one}`)   // error
@@ -32,8 +33,10 @@ const getPost = function () {
     .then(res => {
          // handle before .json()
          console.log(res);
+
+         // another fine-grain error to handle 
          if(!res.ok){
-             throw new Error('post not found')
+             throw new Error('post not found')      // error if prev fetch() fails
          }
         return res.json()
     })
@@ -47,6 +50,10 @@ getPost();
 
 
 // manaul error handling
+// organizing and optimizing fetch and error specific-error handling at diff levels
+// previously: fetch -> then for err+json -> then for fetch -> then for err+json -> catch error
+// function: getJson = fetch -> then for err+json
+// now: getJson -> then for err+getJson -> catch error
 const getJson = function (url, message = 'Something went wrong') {
     return fetch(url)
             .then((response) => {
@@ -55,7 +62,7 @@ const getJson = function (url, message = 'Something went wrong') {
                 return response.json();
     })
 }
-const getPostData = function () {
+const getPostOptimized = function () {
     getJson("https://my-json-server.typicode.com/typicode/demo/posts", 
     "post not found")
     .then((response) => {
@@ -71,27 +78,50 @@ const getPostData = function () {
     
 };
   
-getPostData();
+getPostOptimized();
 
 // Go here for more: https://github.com/pkErbynn/complete-javascript-course/blob/8201b01f2fcd274fb276c1c8e11e55847c6d451e/16-Asynchronous/final/script.js#L146
 
 
 ///////////////
-/// Building Promises
+/// Creating Promises
+/*
+Order of execution
+1. Synchronous code
+2. Promise from Micro Task queue
+3. Callbacks from Callback queue
 
-// const lotteryPromise = new Promise(function (resolve, reject) {
-//     console.log('Lotter is happening...');
+--- Promisifying
+- means, converting/wrapping callback code into promise
+- give benefit of using the .then() chain nicely instead of nexted callback
+*/
+
+// Promisifying
+const lotteryPromise = new Promise(function (resolve, reject) {
+    console.log('Lotter is happening...');
     
-//     setTimeout(() => {
-//         if (Math.random() >= 0.5) {
-//             resolve('YOU WIN')
-//         } else {
-//             reject(new Error('You lost your money'))
-//         }
-//     }, 2000);
-// })
+    setTimeout(() => {
+        if (Math.random() >= 0.5) {
+            resolve('YOU WIN')  // can resolve with no data
+        } else {
+            reject(new Error('You lost your money'))
+        }
+    }, 2000);   // run promise after 2 secs
+})
 
-// lotteryPromise.then(res => console.log(res)).catch(err => console.log(err))
+lotteryPromise.then(res => console.log(res))
+              .catch(err => console.log(err))
+
+
+// Promise with no reject state
+const wait = (sec) => {
+    return new Promise((resolve) => {
+        // resolve
+        setTimeout(resolve, sec * 1000) // or resolve later
+    })
+}
+Promise.resolve('ab').then(x => log(x))
+Promise.reject(new Error('problem')).catch(x => log(x))
 
 
 ///////////////////////////////////////
