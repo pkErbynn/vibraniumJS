@@ -899,6 +899,8 @@ Events
         - help to listen for event on child element that's not rendered yet (generated dynamically), by targeting the parent element which there already and then traversing down to the child element by the time it's present  
 - Working with local storage
     - storing works in browser local storage
+    - set to string with Json.stringify(data) - Serialization
+    - get to object with Json.parse(data) - Deserialization
     -  **object loses its prototype chain when restored from local storage**
 
 

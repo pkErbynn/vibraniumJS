@@ -14,7 +14,7 @@ fetch('..').then((res) => res.json())
 	.then((data) => {
 		return fetch('..')
 	})
-	.then(res => res.json())
+	.then(res => res.json())	// deserialization...from JSON string into JavaScript object
 	.catch(err => log(error.message)). // global way of handling error that occured anywhere in the chain
 	.finally(() => {
 		
