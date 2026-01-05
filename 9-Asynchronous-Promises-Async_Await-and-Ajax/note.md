@@ -37,7 +37,7 @@ fetch('..').then(
 	(response) => {
 		
 		// this will automanically reject the promise
-		if(response.okay){
+		if(!response.okay){
 			throw new Error(`Not found: ${respons.status}`)
 		}
 		

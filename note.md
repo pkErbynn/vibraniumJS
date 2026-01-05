@@ -1062,6 +1062,7 @@ Events
     - **Default imports** & exports
         - Import can have any name and not wrapped in `{}` because...
         - can have only one default export per module file, but you can have as many named exports
+    - exports and import variables are not copies but live connections...means, they point to same variable in memory
     - Aliasing imports and **even aliasing exports** with `as`
     - Can import everything - **the alias becomes an object**
         ```js
