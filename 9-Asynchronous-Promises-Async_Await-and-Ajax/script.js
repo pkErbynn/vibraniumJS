@@ -100,12 +100,12 @@ const lotteryPromise_simple = new Promise(function (resolve, reject) {
     console.log('Lotter is happening...');
 
     if (Math.random() >= 0.5) {
-        resolve('YOU WIN')  // can resolve with no data
+        resolve('YOU WIN')  // data is accessed by .then() call, can also resolve with no data
     } else {
         reject('You lost your money')
     }
 })
-lotteryPromise_simple.then(res => console.log(res))
+lotteryPromise_simple.then(res => console.log(res)) // data passed is available in .then() 'res'
     .catch(err => console.log(err))
 
 // --- Promisifying
