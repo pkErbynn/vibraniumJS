@@ -105,8 +105,15 @@ const lotteryPromise_simple = new Promise(function (resolve, reject) {
         reject('You lost your money')
     }
 })
+
+// consuming
 lotteryPromise_simple.then(res => console.log(res)) // data passed is available in .then() 'res'
     .catch(err => console.log(err))
+
+// alternative way of consuming w/ await keyword
+const res = await lotteryPromise_simple();
+console.log(res);
+
 
 // --- Promisifying
 // - means, converting/wrapping callback code into promise
