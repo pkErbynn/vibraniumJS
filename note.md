@@ -524,7 +524,73 @@ Events
         - the call() and apply() and **bind()** methods
         - IIFE
         - Closures
-    
+
+
+## out var
+- out var is used to:
+	1.	Return an extra value from a method
+	2.	Avoid declaring the variable beforehand
+	3.	Capture a value only if the method succeeds
+- It’s very common with "try" methods like:
+	•	TryGetValue
+	•	TryParse
+	•	TryAdd
+- Example:
+```js
+// Check if this key already exists in the dictionary.
+// If yes → grab the existing OBJECT and increase its Amount
+// If no → add the new allocation to the dictionary
+if (allocationMap.TryGetValue(key, out var existing))
+{
+    existing.Amount += newAllocation.Amount;
+}
+else
+{
+    allocationMap[key] = newAllocation;
+}
+```
+
+- If you don’t use TryGetValue with out, and instead try to use direct access like GetValue (indexer), the code becomes less clean and less safe.
+    - Naive version using indexer
+    ```js
+        if (allocationMap.ContainsKey(key))
+        {
+            var existing = allocationMap[key];
+            existing.Amount += newAllocation.Amount;
+        }
+        else
+        {
+            allocationMap[key] = newAllocation;
+        }
+    ```
+    - What changed?
+	    - ContainsKey(key) is called, then allocationMap[key]
+	    - That means 2 dictionary lookups instead of 1
+    - Meanwhile, TryGetValue does it in one lookup, which is more efficient.
+    - Very naive would be:
+      ```js
+          // this would throw a KeyNotFoundException if the key is missing.
+          var existing = allocationMap[key]; // throws if key doesn't exist
+          existing.Amount += newAllocation.Amount;
+      ```
+- Also, using TryGetValue naive way can be:
+  ```js
+      Allocation existing;
+      if (allocationMap.TryGetValue(key, out existing)){
+        ...
+      }
+  ```
+- Better way of using TryGetValue
+  ```js
+      // One lookup, more performant
+	  // No exception risk
+	  // Cleaner
+      if (allocationMap.TryGetValue(key, out var existing)){
+        ....
+      }
+  ```
+  
+
 ## Working w/ Arrays
 - .splice() / .slice() / .reverse() / .join() / .pop()
 - forEach loop 
@@ -652,6 +718,7 @@ Events
         - usage similar as the spread operator (...)
 - array cheatsheet
 <img src="./Res-Ref/array-methods.jpg">
+
 
 ## Numbers, Dates, Internationalization, Timers
 - Numbers
