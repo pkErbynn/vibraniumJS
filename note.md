@@ -1300,10 +1300,41 @@ Events
         - **only redering dom elements whose text values changed**
     - Bookmarking
     - **API request timeout**
-    - Realizations
+    - NB => Realizations
         - Parent class can access members of child class
         - Purple numbers in console are Numbers, while White are String type
-        - **The `this` keyword in event handler points to the caller by default. To change the reference point to the current object, outsource the handler block to a function and use the `.bind(this)` on the function**
+        - .bind(this)
+            - **The `this` keyword in event handler points to the caller by default. To change the reference point to the current object, outsource the handler block to a function and use the `.bind(this)` on the function**
+          ```js
+          class App {
+            #map;
+            #mapEvent;
+            #workouts = [];
+    
+            constructor(){
+                this.#getPosition();  
+        
+                // register events listeners in constructor
+                // without .bind() the 'this' at 'this.#renderWorkoutMarker(workout)' in #addNewWorkout() method points "form" so will be called by "form" instance by default
+                // now, the .bind() re-point 'this' from 'form' to 'app' instance
+                // simple means 'this' (at 'this.#renderWorkoutMarker(workout)') in #addNewWorkout() refers to the App instance to call it
+                form.addEventListener('submit', this.#addNewWorkout.bind(this));
+
+                // no .bind() cus handler doesn't use 'this' keyword in its block
+                inputType.addEventListener('change', this.#toggleElevationField);
+            }
+        
+           #toggleElevationField(){
+                inputCadence.closest('.form__row').classList.toggle('form__row--hidden');   
+                inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
+           }
+
+           #addNewWorkout(e){  // adding marker pin on map click
+                ...
+                this.#renderWorkoutMarker(workout);
+                ...
+           }
+          ```
     - Js docs
     - Deploy: 
         - forkify deployed manaually with `dist\`...could have been moved to a new git repo but want everything to be in one repo 
