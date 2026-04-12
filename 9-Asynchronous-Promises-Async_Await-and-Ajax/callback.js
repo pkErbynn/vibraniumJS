@@ -83,9 +83,12 @@ function sayBye4(name){
 
 greet4("PKay", (name) => howAreYou4(name, (name2) => sayBye4(name2)))  // this wrapper delays execution until greet3 invokes the callback
 greet4("PKay", (name) => howAreYou4(name, (name) => sayBye4(name)))  // var has diff scope
+// greet4("PKay", (name) => howAreYou4(name, sayBye3))  // mixed ()=> with function reference
+
+// add massage input before
 greet4("PKay", (name) => howAreYou4(name, 
     (name) => {
         console.log("Before goodbye");
-        sayBye4(name)
+        const name2 = name + "!!"
+        sayBye4(name2)
 }))
-// greet4("PKay", (name) => howAreYou4(name, sayBye3))  // mixed ()=> with function reference
