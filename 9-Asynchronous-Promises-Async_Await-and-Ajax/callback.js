@@ -3,8 +3,8 @@
 /*
 
 Callback = a function that i pass as an arg into another function, with the goal of being executed later
+- in order to ENFORCE controll OF the execution flow
 - in order to chain the referenced function into other function
-- in order to controll the execution flow
 - in order to let other operations come before as expected
 
 NB:
