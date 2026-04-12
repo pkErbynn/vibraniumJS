@@ -7,6 +7,9 @@ Callback = a function that i pass as an arg into another function, with the goal
 - in order to controll the execution flow
 - in order to let other operations come before as expected
 
+NB:
+- Function Signature Matching Rule - The caller and callback must agree on arguments...eg: the caller "(name) => sayBye3(name)" matches callback(name)
+
 */
 
 ////// Callback chaining - 2 layers /////
@@ -30,7 +33,7 @@ greet("PKay", () => sayBye())
 function greet2(name, callback){
     console.log("2 - Hellooo " + name)
     callback();     // generic, no args needed...called as () => format 
-    // callback(sayBye);    // when will call as greet2("PKay", howAreYou)...ie, greet2() needs to know sayBye() in its callback
+    // callback(sayBye);    // when will call as greet2("PKay", howAreYou)...ie, greet2() needs to know sayBye() in its callback...this is tight coupling
 }
 
 // add something in the middle of Helloo and Goodbye...ie, Greet -> howAreYou -> Bye...ie, the callback() chained to to "bye"
@@ -60,8 +63,12 @@ function sayBye3(name){
     console.log("3 - Goodbyee " + name);
 }
 
-greet3("PKay", (name) => sayBye3(name))
+greet3("PKay", (name) => sayBye3(name)) // 2nd param input matches callback(name)
 // greet3("PKay", sayBye3) // alt
+
+greet3("PKay", (name) => {
+    sayBye3(name)   // next method to chain/control/order
+})
 
 
 
@@ -81,9 +88,15 @@ function sayBye4(name){
     console.log("4 - Goodbyee " + name)
 }
 
-greet4("PKay", (name) => howAreYou4(name, (name2) => sayBye4(name2)))  // this wrapper delays execution until greet3 invokes the callback
-greet4("PKay", (name) => howAreYou4(name, (name) => sayBye4(name)))  // var has diff scope
+greet4("PKay", (name) => howAreYou4(name, (n) => sayBye4(n)))  // this wrapper delays execution until greet3 invokes the callback
 // greet4("PKay", (name) => howAreYou4(name, sayBye3))  // mixed ()=> with function reference
+
+// add's {} 
+greet4("PKay", (name) => {
+    howAreYou4(name, (n) => {
+        sayBye4(n)
+    })
+})  // this wrapper delays execution until greet3 invokes the callback
 
 // add massage input before
 greet4("PKay", (name) => howAreYou4(name, 
@@ -92,3 +105,33 @@ greet4("PKay", (name) => howAreYou4(name,
         const name2 = name + "!!"
         sayBye4(name2)
 }))
+
+
+
+// NB: Pass Data Forward (Pipeline Thinking)
+// Think like a pipeline: input → step1 → step2 → step3
+function step1(x, cb){ cb(x) }
+function step2(x, cb){ cb(x) }
+function step3(x){}
+
+step1("PKay", (x) => step2(x, step3))
+
+// NB: Know When It Gets Ugly (The Callback Hell)
+function step11(x, cb){ cb(x) }
+function step22(x, cb){ cb(x) }
+function step33(x, cb){ cb(x) }
+function step44(x){ console.log("Final:", x) }
+
+step11("PKay", (x1) => {
+    step22(x1, (x2) => {
+        step33(x2, (x3) => {
+            step44(x3);
+        });
+    });
+});
+
+// NB: Think in Execution Control
+// Callbacks are about:
+// Who controls WHEN this runs and in what order?”
+// Direct call → immediate
+// Callback → deferred / controlled
