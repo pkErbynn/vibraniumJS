@@ -90,6 +90,7 @@ class App {
 
         // register events listeners in constructor
         form.addEventListener('submit', this.#addNewWorkout.bind(this));    // bind re-point 'this' from 'form' (#L85) to 'app' object
+            // NB!:...simple means .#addNewWorkout() method will be called on the App instance NOT the 'form' caller instance
         inputType.addEventListener('change', this.#toggleElevationField);   // no bind cus handler doesn't use 'this' keyword in its block
         containerWorkouts.addEventListener('click', this.#moveMapToMarker.bind(this))  // event delegation to parent/common form element
     }
