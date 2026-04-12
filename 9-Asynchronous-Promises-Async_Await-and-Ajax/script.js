@@ -3,11 +3,11 @@
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
-///////////////////////////////////////
+/////////////////// PROMISES AND ASYNC/AWAIT ////////////////////
 
 // Consuming Promise/Async functions
 // ...NB: async functions like fetch() returns Promise not the settled/fullfilled value...unless 'await'ed
-// manually throw custom errors that mignt not be handled auto by promise
+// manually throw custom errors that might not be handled auto by promise
 // example: - resource not found, property not found on data
 
 const getPost = function () {
@@ -40,7 +40,7 @@ const getPost = function () {
             if (!res.ok) {
                 throw new Error('post not found')      // error if prev fetch() fails
             }
-            return res.json()
+            return res.json()   // deserialized into js object to be used downstream when getPost() method is called
         })
         .then(res => console.log(res))
         .catch(err => console.error(`${err} boom!!`))   // handles all err msg

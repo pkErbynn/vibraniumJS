@@ -10,7 +10,8 @@ Build Promise => Consume Promise
 ```js
 // Consumig Promise 
 // NB: don't do nested .then()
-fetch('..').then((res) => res.json())
+fetch('..')
+	.then((res) => res.json())
 	.then((data) => {
 		return fetch('..')
 	})
@@ -22,9 +23,9 @@ fetch('..').then((res) => res.json())
 
 
 // NB: not best practice to catch error early inside .then() chain  like
-  .then(
-	  res => res.json(),
-	  error => log(err.message)
+  	.then(
+		res => res.json(),
+		error => log(err.message)
 	)
 	.then((data) => {
 		return fetch('..')
