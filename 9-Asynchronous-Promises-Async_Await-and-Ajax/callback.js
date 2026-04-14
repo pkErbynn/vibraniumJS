@@ -1,69 +1,76 @@
 //////////////////// CALLBACK FUNCTIONS ///////////////////
 
-// /*
+/*
 
-// Callback = a function that i pass as an arg into another function, with the goal of being executed later
-// - in order to ENFORCE controll OF the execution flow
-// - in order to chain the referenced function into other function
-// - in order to let other operations come before as expected
+Callback = a function that i pass as an arg into another function, with the goal of being executed later
+- in order to ENFORCE controll OF the execution flow
+- in order to chain the referenced function into other function
+- in order to let other operations come before as expected
 
-// NB:
-// - Function Signature Matching Rule - The caller and invocation callback must agree on arguments...eg: the caller "(name) => sayBye3(name)" matches callback(name)
+NB:
+- Function Signature Matching Rule - The caller and invocation callback must agree on arguments...eg: the caller "(name) => sayBye3(name)" matches callback(name)
 
-// */
+*/
 
-// ////// Callback chaining - 2 layers /////
-// // eg: greet and say bye...greet must come before...ie, Greet -> Bye... there is an order
-// function greet(name, callback){
-//     console.log("Hellooo " + name)
-//     callback();
-    // console.log("After callback()"); // can exec sth after callback function
-// }
+////// Callback chaining - 2 layers /////
+// eg: greet and say bye...greet must come before...ie, Greet -> Bye... there is an order
+function greet(name, callback){
+    console.log("Hellooo " + name)
+    callback();
+}
 
-// function sayBye(){
-//     console.log("Goodbyee")
-// }
+function greet_AfterCallback(name, callback){
+    console.log("Hellooo " + name)
+    callback();
+    console.log("After callback()"); // can exec sth after callback function
+}
+
+function sayBye(){
+    console.log("Goodbyee")
+}
 
 // greet("PKay", () => sayBye())
-// // greet("PKay", sayBye)   // alt - method ref
+// greet("PKay", sayBye)   // alt - method ref
 // greet("PKay", () => function(){})   // alt - in-line method definition
+// greet_AfterCallback("PKay", () => sayBye())
 
 
+//// Callback chaining - 3 layers /////
+// eg: greet and say bye...greet must come before...ie, Greet -> Bye... there is an order
+function greet2(name, callback){
+    console.log("2 - Hellooo " + name)
+    callback();     // generic, no args needed...called as () => format 
+    // callback(sayBye);    // when will call as greet2("PKay", howAreYou)...ie, greet2() needs to know sayBye() in its callback...this is tight coupling
+}
 
-// //// Callback chaining - 3 layers /////
-// // eg: greet and say bye...greet must come before...ie, Greet -> Bye... there is an order
-// function greet2(name, callback){
-//     console.log("2 - Hellooo " + name)
-//     callback();     // generic, no args needed...called as () => format 
-//     // callback(sayBye);    // when will call as greet2("PKay", howAreYou)...ie, greet2() needs to know sayBye() in its callback...this is tight coupling
-// }
+// add something in the middle of Helloo and Goodbye...ie, Greet -> howAreYou -> Bye...ie, the callback() chained to to "bye"
+function howAreYou2(callback){
+    console.log("2 - How are you doing?...");
+    callback()
+}
 
-// // add something in the middle of Helloo and Goodbye...ie, Greet -> howAreYou -> Bye...ie, the callback() chained to to "bye"
-// function howAreYou2(callback){
-//     console.log("2 - How are you doing?...");
-//     callback()
-// }
-
-// function sayBye2(){
-//     console.log("2 - Goodbyee")
-// }
+function sayBye2(){
+    console.log("2 - Goodbyee")
+}
 
 // greet2("PKay", () => howAreYou2(() => sayBye2()))  // this ()=> is prefered ** ....caller haddles/passes the fnx chain inside the arrow function
 // // greet2("PKay", () => howAreYou2(sayBye2))  // this ()=> is prefered ** ....caller passes fnx inside the arrow function
 // // greet2("PKay", howAreYou)    // when greet2() needs to know about sayBye2() in its callback by greet2() having "callback(sayBye)""
 
+// greet2("Erb", () => sayBye2())   // no signature mismatch because callback() inside greet2() has no input value and passed sayBye2() also has not input
+// greet2("Erb", () => howAreYou2(() => sayBye2())) // might think signature mismatch because callback() inside greet2() has no input but sayBye2(callback) has 'callback' input. No it's not an regular input value it's a callback function. Its input would have been passed inside as (inp) => howAreYou2(inp, () => sayBye2())...so an callback arg is NOT considered as input
 
 
-// // //////// Callback with input - 2 layers ///////////
-// function greet3(name, callback){
-//     console.log("3 - Hellooo " + name)
-//     callback(name); // pass it forward
-// }
+// //////// Callback with input - 2 layers ///////////
+function greet3(name, callback){
+    console.log("3 - Hellooo " + name)
+    callback(name); // pass it forward
+}
 
-// // expand the method with the 'name' arg
-// function sayBye3(name){
-//     console.log("3 - Goodbyee " + name);
-// }
+// expand the method with the 'name' arg
+function sayBye3(name){
+    console.log("3 - Goodbyee " + name);
+}
 
 // greet3("PKay", (name) => sayBye3(name)) // 2nd param input matches callback(name)
 // // greet3("PKay", sayBye3) // alt
@@ -74,21 +81,21 @@
 
 
 
-// // //////// Callback with input - 3 layers ///////////
-// function greet4(name, callback){
-//     console.log("4 - Hellooo " + name)
-//     callback(name); // pass it forward
-// }
+// //////// Callback with input - 3 layers ///////////
+function greet4(name, callback){
+    console.log("4 - Hellooo " + name)
+    callback(name); // pass it forward
+}
 
-// // expand the method with the 'name' arg
-// function howAreYou4(name, callback){
-//     console.log("4 - How are you doing, " + name + "?...");
-//     callback(name) // pass it forward again
-// }
+// expand the method with the 'name' arg
+function howAreYou4(name, callback){
+    console.log("4 - How are you doing, " + name + "?...");
+    callback(name) // pass it forward again
+}
 
-// function sayBye4(name){
-//     console.log("4 - Goodbyee " + name)
-// }
+function sayBye4(name){
+    console.log("4 - Goodbyee " + name)
+}
 
 // greet4("PKay", (name) => howAreYou4(name, (n) => sayBye4(n)))  // this wrapper delays execution until greet3 invokes the callback
 // // greet4("PKay", (name) => howAreYou4(name, sayBye3))  // mixed ()=> with function reference
@@ -110,19 +117,19 @@
 
 
 
-// // NB: Pass Data Forward (Pipeline Thinking)
-// // Think like a pipeline: input → step1 → step2 → step3
-// function step1(x, cb){ cb(x) }
-// function step2(x, cb){ cb(x) }
-// function step3(x){}
+// NB: Pass Data Forward (Pipeline Thinking)
+// Think like a pipeline: input → step1 → step2 → step3
+function step1(x, cb){ cb(x) }
+function step2(x, cb){ cb(x) }
+function step3(x){}
 
 // step1("PKay", (x) => step2(x, step3))
 
-// // NB: Know When It Gets Ugly (The Callback Hell)
-// function step11(x, cb){ cb(x) }
-// function step22(x, cb){ cb(x) }
-// function step33(x, cb){ cb(x) }
-// function step44(x){ console.log("Final:", x) }
+// NB: Know When It Gets Ugly (The Callback Hell)
+function step11(x, cb){ cb(x) }
+function step22(x, cb){ cb(x) }
+function step33(x, cb){ cb(x) }
+function step44(x){ console.log("Final:", x) }
 
 // step11("PKay", (x1) => {
 //     step22(x1, (x2) => {
@@ -132,11 +139,11 @@
 //     });
 // });
 
-// // NB: Think in Execution Control
-// // Callbacks are about:
-// // - Who controls WHEN this runs and in what order?”
-// // - Direct call → immediate
-// // - Callback → deferred / controlled
+// NB: Think in Execution Control
+// Callbacks are about:
+// - Who controls WHEN this runs and in what order?”
+// - Direct call → immediate
+// - Callback → deferred / controlled
 
 
 //// Return values in callbacks ////////
@@ -177,7 +184,7 @@ const HowAreYouNameInput = (name) => {
 // Hello("Pkay", (name) => HowAreYouNameInput(name)) // function arg passed should match callback invoked in Hello()...ie, callback had no arg passed so should match that
 
 // Regular call with no returned value
-Hello("Pkay", () => HowAreYou_WithNoCallback())
+// Hello("Pkay", () => HowAreYou_WithNoCallback())
 
 // // Loging returned value from the callback chain
 // const value = Hello("Pkay", () => HowAreYou(() => returnThisGift()));   // returns last value from the chain
@@ -199,4 +206,24 @@ NOTED RULE
 - Its like a pipe (finalValue ← step3 ← step2 ← step1), if one layers doesn't return, the chain is broken, and value is LOST
 - But 'return values' only applies to SYNCHRONOUS callbacks, NOT ASYNC
 */
+
+
+
+// === returning callback() only is same as regular non-returned callback
+const stage1 = function(name, callback) {
+    console.log("stage 1 " + name);
+    return callback()
+}
+
+const stage2 = (callback) => {
+    console.log("stage 2");
+    return callback()
+}
+
+const stage3 = () => {
+    console.log("stage 3");
+}
+
+// stage1("Pk", () => stage2(() => stage3()))
+// stage1("Pk", () => stage2(() => stage2(() => {console.log("custom arrow function");})))
 
