@@ -209,7 +209,8 @@ NOTED RULE
 
 
 
-// === returning callback() only is same as regular non-returned callback
+// === returning callback() only is same as regular non-returned callback ====
+// but return desn't apply in async functions, thus NOT RECOMMENDED to return callback()
 const stage1 = function(name, callback) {
     console.log("stage 1 " + name);
     return callback()
